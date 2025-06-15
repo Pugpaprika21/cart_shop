@@ -1,0 +1,37 @@
+# go get gorm.io/gorm@v1.25.4
+
+---------------------------------------
+
+your-project/
+├── cmd/                    # Entry points (main.go)
+│   └── yourapp/
+│       └── main.go
+│
+├── internal/               # Business logic (ไม่ให้ package ภายนอกเข้าถึง)
+│   ├── domain/             # Domain entity + interfaces
+│   │   └── user/
+│   │       ├── entity.go
+│   │       └── repository.go
+│   │
+│   ├── application/        # Use cases / Services
+│   │   └── user/
+│   │       └── service.go
+│   │
+│   ├── adapter/            # Adapter layer (controller, repository impl)
+│   │   ├── http/           # HTTP Handlers
+│   │   │   └── user/
+│   │   │       └── handler.go
+│   │   │
+│   │   └── persistence/    # DB Access / Repositories implementation
+│   │       └── user/
+│   │           └── repo.go
+│   │
+│   └── config/             # Configuration, env loader
+│       └── config.go
+│
+├── pkg/                    # Utilities / reusable helpers
+│   └── logger/
+│       └── logger.go
+│
+├── go.mod
+└── go.sum
