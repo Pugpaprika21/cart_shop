@@ -16,6 +16,10 @@ func (r *router) v1() {
 		user.POST("/delUser", handler.User.DelUser)
 
 		products := v1.Group("/products", r.jwtx.Validate())
-		products.POST("/create", nil)
+		products.POST("/create", handler.Products.CreProducts)
+		products.POST("/get", handler.Products.GetProducts)
+		products.POST("/find", handler.Products.FindProducts)
+		products.POST("/update", handler.Products.UpdProducts)
+		products.POST("/delete", handler.Products.DelProducts)
 	}
 }

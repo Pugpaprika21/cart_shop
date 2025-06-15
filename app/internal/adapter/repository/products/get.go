@@ -16,3 +16,13 @@ func (p *productsRepository) GenSKU(ctx context.Context, sql sqlx.Sqlx) ([]schem
 
 	return rows, nil
 }
+
+func (p *productsRepository) GetProducts(ctx context.Context, sql sqlx.Sqlx) ([]schema.GetProducts, error) {
+	var rows []schema.GetProducts
+	result := p.db.WithContext(ctx).Raw(sql.Stmt, sql.Args...).Scan(&rows)
+	if result.Error != nil {
+		return nil, errors.WrapDBError(result.Error)
+	}
+
+	return rows, nil
+}

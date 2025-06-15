@@ -49,6 +49,21 @@ type CreProducts struct {
 	IsActive    *int32   `gorm:"column:is_active"`
 }
 
+type UpdProducts struct {
+	ID          *int64   `gorm:"column:id"`
+	SKU         *string  `gorm:"column:sku"`
+	Name        *string  `gorm:"column:name"`
+	Description *string  `gorm:"column:description"`
+	Price       *float64 `gorm:"column:price"`
+	Stock       *int64   `gorm:"column:stock"`
+	CreBy       *string  `gorm:"column:cre_by"`
+	CreDate     *string  `gorm:"column:cre_date"`
+	UpdBy       *string  `gorm:"column:upd_by"`
+	UpdDate     *string  `gorm:"column:upd_date"`
+	ProgID      *string  `gorm:"column:prog_id"`
+	IsActive    *int32   `gorm:"column:is_active"`
+}
+
 type GenSKU struct {
 	ResultSKU sql.NullString `gorm:"column:result_sku"`
 }
