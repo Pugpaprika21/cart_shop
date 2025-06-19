@@ -26,3 +26,13 @@ func (p *productsRepository) GetProducts(ctx context.Context, sql sqlx.Sqlx) ([]
 
 	return rows, nil
 }
+
+func (p *productsRepository) GetHasProductExisting(ctx context.Context, sql sqlx.Sqlx) ([]schema.GetHasProductExisting, error) {
+	var rows []schema.GetHasProductExisting
+	result := p.db.WithContext(ctx).Raw(sql.Stmt, sql.Args...).Scan(&rows)
+	if result.Error != nil {
+		return nil, errors.WrapDBError(result.Error)
+	}
+
+	return rows, nil
+}

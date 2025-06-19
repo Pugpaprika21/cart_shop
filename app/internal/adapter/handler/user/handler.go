@@ -1,7 +1,9 @@
 package user
 
 import (
+	"log/slog"
 	"miniservice/app/internal/domain/service/user"
+	"os"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,8 +18,9 @@ type IUserHandler interface {
 
 type userHandler struct {
 	service user.IUserService
+	logger  *slog.Logger
 }
 
 func NewUserhandler(service user.IUserService) IUserHandler {
-	return &userHandler{service: service}
+	return &userHandler{service: service, logger: slog.New(slog.NewJSONHandler(os.Stdout, nil))}
 }

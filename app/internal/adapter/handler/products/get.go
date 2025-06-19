@@ -1,6 +1,7 @@
 package products
 
 import (
+	"log/slog"
 	"miniservice/app/internal/domain/dto/qryparam"
 	"miniservice/app/internal/domain/dto/request"
 	"miniservice/app/internal/enum"
@@ -10,13 +11,14 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func (u *productsHandler) GetProducts(c echo.Context) error {
+func (p *productsHandler) GetProducts(c echo.Context) error {
 	var req request.GetProducts
 	var qry qryparam.GetProducts
 	var reqID = c.Response().Header().Get(echo.HeaderXRequestID)
 	var resp = response.NewResponseBuilder()
 
 	if err := c.Bind(&req); err != nil {
+		p.logger.Error("bind error", slog.Any("handler", req))
 		return c.JSON(
 			http.StatusBadRequest,
 			resp.Message(err.Error()).Code(enum.FOR_BAD_REQUEST).RequestID(reqID).Build(),
@@ -24,16 +26,17 @@ func (u *productsHandler) GetProducts(c echo.Context) error {
 	}
 
 	if err := c.Validate(&req); err != nil {
+		p.logger.Error("validate error", slog.Any("handler", req))
 		return c.JSON(
 			http.StatusBadRequest,
 			resp.Message(err.Error()).Code(enum.FOR_BAD_REQUEST).RequestID(reqID).Build(),
 		)
 	}
 
-	data, totalRow, err := u.service.GetProducts(c.Request().Context(), &req, &qry)
+	data, totalRow, err := p.service.GetProducts(c.Request().Context(), &req, &qry)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, resp.Message(err.Error()).Code(enum.FOR_ERROR).RequestID(reqID).Build())
 	}
 
-	return c.JSON(http.StatusOK, resp.Message(enum.SUCCESS_STR).Code(200).RequestID(reqID).Total(totalRow).Data(data).Build())
+	return c.JSON(http.StatusOK, resp.Message(enum.SUCCESS_STR).Code(enum.FOR_OK).RequestID(reqID).Total(totalRow).Data(data).Build())
 }

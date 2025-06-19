@@ -3,42 +3,62 @@ package products
 import (
 	"context"
 	"errors"
+	"fmt"
 	"miniservice/app/internal/domain/dto/request"
 	"miniservice/app/internal/enum"
 	"miniservice/app/internal/persistence/schema"
 	"miniservice/app/pkg/sqlx"
 	"strings"
+	"time"
 )
 
 func (p *productsService) CreProducts(ctx context.Context, req *request.CreProducts) error {
 	var sqlstr strings.Builder
-	var args []interface{}
 	dt := sqlx.DateTimeNow()
 
-	rows := req.CreProductsRows
+	var rows []*request.CreProductsRows = req.CreProductsRows
 	if rows == nil || len(rows) == 0 {
 		return errors.New(enum.NO_DATA_PROVIDED_CRE_STR)
 	}
 
 	params := make([]schema.CreProducts, len(rows))
+	prefix := time.Now().Format("0601")
+
+	sqlstr.WriteString(`
+		SELECT IFNULL(MAX(CAST(SUBSTRING(sku, 5, 4) AS UNSIGNED)), 0) AS max_num
+		FROM products
+		WHERE LEFT(sku, 4) = ?;
+	`)
+
+	genSku, err := p.repository.GenSKU(ctx, sqlx.Sqlx{Stmt: sqlstr.String(), Args: []interface{}{prefix}})
+	if err != nil {
+		return err
+	}
+
+	currentNum := 0
+	if len(genSku) > 0 {
+		currentNum = int(genSku[0].MaxNum.Int64)
+	}
+
+	sqlstr.Reset()
+
 	for i, rec := range rows {
-		var resultSKU string
-
 		if rec.SKU == nil || *rec.SKU == "" {
-			sqlstr.Reset()
-			sqlstr.WriteString(`
-				SELECT CONCAT(DATE_FORMAT(NOW(), '%y%m'), LPAD(IFNULL(MAX(CAST(SUBSTRING(sku, 5, 4) AS UNSIGNED)) + 1, 1), 4, '0')) AS result_sku
-				FROM products
-				WHERE LEFT(sku, 4) = DATE_FORMAT(NOW(), '%y%m');
-			`)
+			currentNum++
+			sku := fmt.Sprintf("%s%04d", prefix, currentNum)
+			rec.SKU = &sku
+		} else {
+			sqlstr.WriteString(`SELECT COUNT(*) AS product_existing FROM products WHERE sku = ? AND is_active = 0`)
 
-			genSku, err := p.repository.GenSKU(ctx, sqlx.Sqlx{Stmt: sqlstr.String(), Args: args})
+			checkRes, err := p.repository.GetHasProductExisting(ctx, sqlx.Sqlx{Stmt: sqlstr.String(), Args: []interface{}{*rec.SKU}})
 			if err != nil {
 				return err
 			}
+			sqlstr.Reset()
 
-			resultSKU = genSku[0].ResultSKU.String
-			rec.SKU = &resultSKU
+			if len(checkRes) > 0 && checkRes[0].ProductExisting.Int64 > 0 {
+				return fmt.Errorf("SKU '%s' ถูกใช้แล้ว", *rec.SKU)
+			}
 		}
 
 		params[i] = schema.CreProducts{

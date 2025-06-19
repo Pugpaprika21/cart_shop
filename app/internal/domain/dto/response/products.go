@@ -7,11 +7,11 @@ type GetProducts struct {
 	Description *string  `json:"description"`
 	Price       *float64 `json:"price"`
 	Stock       *int64   `json:"stock"`
-	CreBy       *string  `json:"cre_by"`
-	CreDate     *string  `json:"cre_date"`
-	UpdBy       *string  `json:"upd_by"`
-	UpdDate     *string  `json:"upd_date"`
-	ProgID      *string  `json:"prog_id"`
+	CreBy       *string  `json:"cre_by,omitempty"`
+	CreDate     *string  `json:"cre_date,omitempty"`
+	UpdBy       *string  `json:"upd_by,omitempty"`
+	UpdDate     *string  `json:"upd_date,omitempty"`
+	ProgID      *string  `json:"prog_id,omitempty"`
 	IsActive    *int32   `json:"is_active"`
 	TotalRow    *int64   `json:"total_row"`
 }

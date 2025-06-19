@@ -1,7 +1,9 @@
 package products
 
 import (
+	"log/slog"
 	"miniservice/app/internal/domain/service/products"
+	"os"
 
 	"github.com/labstack/echo/v4"
 )
@@ -16,8 +18,9 @@ type IProductsHandler interface {
 
 type productsHandler struct {
 	service products.IProductsService
+	logger  *slog.Logger
 }
 
 func NewProductsHandler(service products.IProductsService) IProductsHandler {
-	return &productsHandler{service: service}
+	return &productsHandler{service: service, logger: slog.New(slog.NewJSONHandler(os.Stdout, nil))}
 }

@@ -1,6 +1,7 @@
 package jwtx
 
 import (
+	"context"
 	"miniservice/app/internal/enum"
 	"miniservice/app/pkg/response"
 	"net/http"
@@ -41,6 +42,9 @@ func (j *jwtx) Validate() echo.MiddlewareFunc {
 				return c.JSON(http.StatusUnauthorized, resp.Code(enum.FOR_AUTH_ERROR).Message("Invalid token").Build())
 			}
 
+			ctx := context.WithValue(c.Request().Context(), "context_user", nil)
+			req := c.Request().WithContext(ctx)
+			c.SetRequest(req)
 			c.Set("token", j.secret)
 			return next(c)
 		}

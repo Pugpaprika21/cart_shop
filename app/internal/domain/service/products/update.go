@@ -26,7 +26,6 @@ func (p *productsService) UpdProducts(ctx context.Context, req *request.UpdProdu
 		args = []interface{}{}
 
 		params := schema.UpdProducts{
-			SKU:         rec.SKU,
 			Name:        rec.Name,
 			Description: rec.Description,
 			Price:       rec.Price,

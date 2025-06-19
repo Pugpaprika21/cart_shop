@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log/slog"
 	"miniservice/app/internal/domain/dto/qryparam"
 	"miniservice/app/internal/domain/dto/request"
 	"miniservice/app/internal/enum"
@@ -17,6 +18,7 @@ func (u *userHandler) FindUser(c echo.Context) error {
 	var resp = response.NewResponseBuilder()
 
 	if err := c.Bind(&req); err != nil {
+		u.logger.Error("bind error", slog.Any("handler", req))
 		return c.JSON(
 			http.StatusBadRequest,
 			resp.Message(err.Error()).Code(enum.FOR_BAD_REQUEST).RequestID(reqID).Build(),
@@ -24,6 +26,7 @@ func (u *userHandler) FindUser(c echo.Context) error {
 	}
 
 	if err := c.Validate(&req); err != nil {
+		u.logger.Error("validate error", slog.Any("handler", req))
 		return c.JSON(
 			http.StatusBadRequest,
 			resp.Message(err.Error()).Code(enum.FOR_BAD_REQUEST).RequestID(reqID).Build(),
@@ -35,5 +38,5 @@ func (u *userHandler) FindUser(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, resp.Message(err.Error()).Code(enum.FOR_ERROR).RequestID(reqID).Build())
 	}
 
-	return c.JSON(http.StatusOK, resp.Message(enum.SUCCESS_STR).Code(200).RequestID(reqID).Data(data).Build())
+	return c.JSON(http.StatusOK, resp.Message(enum.SUCCESS_STR).Code(enum.FOR_OK).RequestID(reqID).Data(data).Build())
 }

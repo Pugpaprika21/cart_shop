@@ -1,6 +1,7 @@
 package products
 
 import (
+	"log/slog"
 	"miniservice/app/internal/domain/dto/request"
 	"miniservice/app/internal/enum"
 	"miniservice/app/pkg/response"
@@ -15,6 +16,7 @@ func (p *productsHandler) UpdProducts(c echo.Context) error {
 	var resp = response.NewResponseBuilder()
 
 	if err := c.Bind(&req); err != nil {
+		p.logger.Error("bind error", slog.Any("handler", req))
 		return c.JSON(
 			http.StatusBadRequest,
 			resp.Message(err.Error()).Code(enum.FOR_BAD_REQUEST).RequestID(reqID).Build(),
@@ -22,6 +24,7 @@ func (p *productsHandler) UpdProducts(c echo.Context) error {
 	}
 
 	if err := c.Validate(&req); err != nil {
+		p.logger.Error("validate error", slog.Any("handler", req))
 		return c.JSON(
 			http.StatusBadRequest,
 			resp.Message(err.Error()).Code(enum.FOR_BAD_REQUEST).RequestID(reqID).Build(),

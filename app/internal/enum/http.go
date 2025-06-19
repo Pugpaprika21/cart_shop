@@ -5,6 +5,8 @@ const (
 	FOR_ERROR       int = 500
 	FOR_AUTH_ERROR  int = 401
 	FOR_BAD_REQUEST int = 400
+	FOR_OK          int = 200
+	FOR_CREATED     int = 201
 )
 
 const (
@@ -12,6 +14,7 @@ const (
 	ERROR_STR       string = "Internal Error"
 	AUTH_ERROR_STR  string = "Unauthorized"
 	BAD_REQUEST_STR string = "Bad Request"
+	CREATED_STR     string = "Created"
 	//
 	IS_ACTIVE string = "IS_ACTIVE"
 )

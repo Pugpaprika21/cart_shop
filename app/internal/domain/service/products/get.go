@@ -81,12 +81,9 @@ func (p *productsService) GetProducts(ctx context.Context, req *request.GetProdu
 			SKU:         &rec.SKU.String,
 			Name:        &rec.Name.String,
 			Description: &rec.Description.String,
+			Price:       &rec.Price.Float64,
+			Stock:       &rec.Stock.Int64,
 			IsActive:    &rec.IsActive.Int32,
-			CreBy:       &rec.CreBy.String,
-			CreDate:     &rec.CreDate.String,
-			UpdBy:       &rec.UpdBy.String,
-			UpdDate:     &rec.UpdDate.String,
-			ProgID:      &rec.ProgID.String,
 			TotalRow:    &rec.TotalRow.Int64,
 		}
 	}

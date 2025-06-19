@@ -18,6 +18,10 @@ type GetProducts struct {
 	TotalRow    sql.NullInt64   `gorm:"column:total_row"`
 }
 
+type GetHasProductExisting struct {
+	ProductExisting sql.NullInt64 `gorm:"column:product_existing"`
+}
+
 type FindProducts struct {
 	ID          sql.NullInt64   `gorm:"column:id"`
 	SKU         sql.NullString  `gorm:"column:sku"`
@@ -66,4 +70,5 @@ type UpdProducts struct {
 
 type GenSKU struct {
 	ResultSKU sql.NullString `gorm:"column:result_sku"`
+	MaxNum    sql.NullInt64  `gorm:"column:max_num"`
 }
